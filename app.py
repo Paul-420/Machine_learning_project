@@ -24,7 +24,7 @@ model = models.resnet18(pretrained=False)
 model.fc = nn.Linear(model.fc.in_features, num_classes)
 
 # Charger les poids sauvegardés
-model.load_state_dict(torch.load("bird_classifier_test.pth", map_location=torch.device('cpu')), strict=False)
+model.load_state_dict(torch.load("bird_classifier.pth", map_location=torch.device('cpu')), strict=False)
 
 model.eval()  # Mode évaluation
 
