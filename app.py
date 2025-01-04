@@ -5,6 +5,16 @@ from PIL import Image
 import torch
 from torch import nn
 import io
+from sqlalchemy.orm import Session
+from fastapi.responses import JSONResponse
+from db_setup import SessionLocal, BirdImage
+
+# Dictionnaire des classes avec les noms des oiseaux
+class_names = [
+    "Black_footed_Albatross", "Laysan_Albatross", "Groove_billed_Ani", "Red_winged_Blackbird", "ParrRusty_Blackbirdot",
+    "Bobolink", "Indigo_Bunting", "Eastern_Towhee", "Pelagic_Cormorant", "Bronzed_Cowbird"
+]
+
 
 # Initialiser l'application FastAPI
 app = FastAPI()
@@ -35,6 +45,23 @@ transform = transforms.Compose([
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
+@app.get("/images/")
+def get_images():
+    db: Session = SessionLocal()
+    try:
+        images = db.query(BirdImage).all()
+        image_data = [
+            {
+                "id": image.id,
+                "class_label": image.class_label,
+                "image": f"data:image/jpeg;base64,{image.image.decode('latin1')}"
+            }
+            for image in images
+        ]
+        return JSONResponse(content=image_data)
+    finally:
+        db.close()
+
 # Route pour tester le service
 @app.get("/")
 def read_root():
@@ -56,8 +83,11 @@ async def predict(file: UploadFile = File(...)):
             outputs = model(input_tensor)
             _, predicted_class = torch.max(outputs, 1)
         
-        # Renvoyer la classe prédite sous le nom 'prediction'
-        return {"prediction": predicted_class.item()}  # Utilisation de 'prediction' comme clé
+        # Obtenir le nom de l'oiseau à partir de la prédiction
+        bird_name = class_names[predicted_class.item()]
+        
+        # Renvoyer le résultat
+        return {"prediction": bird_name}
     
     except Exception as e:
         return {"error": str(e)}

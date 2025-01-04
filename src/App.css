@@ -1,0 +1,95 @@
+/* App.css */
+
+/* Corps de la page */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Conteneur principal */
+  .container {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  /* Titre principal */
+  h1 {
+    color: #4CAF50;
+    margin-bottom: 20px;
+  }
+  
+  /* Formulaire */
+  form {
+    margin-bottom: 30px;
+  }
+  
+  input[type="file"] {
+    margin-right: 10px;
+  }
+  
+  button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Résultat de la prédiction */
+  .prediction {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  /* Section des images enregistrées */
+  .saved-images {
+    text-align: center;
+  }
+  
+  .saved-images h2 {
+    margin-bottom: 20px;
+  }
+  
+  .image-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .image-card {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .image-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .image-card img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+  }
+  
+  .image-card p {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #333;
+  }
+  
