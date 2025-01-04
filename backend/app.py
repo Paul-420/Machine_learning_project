@@ -7,7 +7,7 @@ from torch import nn
 import io
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
-from db_setup import SessionLocal, BirdImage
+from backend.db_setup import SessionLocal, BirdImage
 
 # Dictionnaire des classes avec les noms des oiseaux
 class_names = [
@@ -34,7 +34,7 @@ model = models.resnet18(pretrained=False)
 model.fc = nn.Linear(model.fc.in_features, num_classes)
 
 # Charger les poids sauvegardés
-model.load_state_dict(torch.load("bird_classifier.pth", map_location=torch.device('cpu')), strict=False)
+model.load_state_dict(torch.load("backend/bird_classifier.pth", map_location=torch.device('cpu')), strict=False)
 
 model.eval()  # Mode évaluation
 

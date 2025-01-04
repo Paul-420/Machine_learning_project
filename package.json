@@ -4,10 +4,12 @@
   "description": "Application ML Birds",
   "main": "index.js",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "npm run start:frontend",
+    "start:frontend": "cd frontend && react-scripts start",
+    "start:backend": "uvicorn backend.app:app --reload --host 0.0.0.0 --port 8000",
+    "build": "cd frontend && react-scripts build",
+    "test": "cd frontend && react-scripts test",
+    "eject": "cd frontend && react-scripts eject"
   },
   "dependencies": {
     "express": "^4.17.1"
