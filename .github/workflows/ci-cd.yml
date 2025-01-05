@@ -11,9 +11,8 @@ on:
       - main
 
 jobs:
-  # Étape 1 : Tests pour la branche dev
+  # Étape 1 : Tests sur la branche dev
   test:
-    if: github.ref_name == 'dev'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -29,11 +28,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run unit tests
+      - name: Run FastAPI tests
         run: |
           pytest --maxfail=5 --disable-warnings
 
-  # Étape 2 : Build Docker et tests pour la branche staging
+  # Étape 2 : Build Docker et tests sur la branche staging
   build-and-test:
     if: github.ref_name == 'staging'
     runs-on: ubuntu-latest
@@ -43,8 +42,8 @@ jobs:
 
       - name: Build Docker images
         run: |
-          docker build -t your_dockerhub_username/app-backend:staging .
-          docker build -f frontend/Dockerfile -t your_dockerhub_username/app-frontend:staging .
+          docker build -t linkaon/machine_learning_project-backend:staging .
+          docker build -f frontend/Dockerfile -t linkaon/machine_learning_project-frontend:staging .
 
       - name: Log in to DockerHub
         uses: docker/login-action@v2
@@ -54,15 +53,15 @@ jobs:
 
       - name: Push Docker images
         run: |
-          docker push your_dockerhub_username/app-backend:staging
-          docker push your_dockerhub_username/app-frontend:staging
+          docker push linkaon/machine_learning_project-backend:staging
+          docker push linkaon/machine_learning_project-frontend:staging
 
       - name: Run integration tests
         run: |
-          # Ajouter ici vos tests d'intégration spécifiques à l'application
+          # Ajouter vos tests d'intégration ici
           echo "Tests d'intégration exécutés."
 
-  # Étape 3 : Build final et déploiement pour la branche main
+  # Étape 3 : Déploiement sur la branche main
   deploy:
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
@@ -72,21 +71,19 @@ jobs:
 
       - name: Pull Docker images from staging
         run: |
-          docker pull your_dockerhub_username/app-backend:staging
-          docker pull your_dockerhub_username/app-frontend:staging
+          docker pull linkaon/machine_learning_project-backend:staging
+          docker pull linkaon/machine_learning_project-frontend:staging
 
       - name: Tag images as latest
         run: |
-          docker tag your_dockerhub_username/app-backend:staging your_dockerhub_username/app-backend:latest
-          docker tag your_dockerhub_username/app-frontend:staging your_dockerhub_username/app-frontend:latest
+          docker tag linkaon/machine_learning_project-backend:staging linkaon/machine_learning_project-backend:latest
+          docker tag linkaon/machine_learning_project-frontend:staging linkaon/machine_learning_project-frontend:latest
 
       - name: Push Docker images to main
         run: |
-          docker push your_dockerhub_username/app-backend:latest
-          docker push your_dockerhub_username/app-frontend:latest
+          docker push linkaon/machine_learning_project-backend:latest
+          docker push linkaon/machine_learning_project-frontend:latest
 
       - name: Deploy to Cloud
         run: |
-          curl -X POST -H "Authorization: Bearer ${{ secrets.CLOUD_API_KEY }}" \
-          -d '{"image":"your_dockerhub_username/app-backend:latest"}' \
-          https://your-cloud-platform/api/deploy
+          echo "Déploiement terminé avec succès. Ajouter ici votre commande ou API de déploiement cloud."
