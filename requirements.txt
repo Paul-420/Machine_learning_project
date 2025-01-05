@@ -1,5 +1,5 @@
 # Backend Framework
-fastapi==0.95.2
+fastapi
 uvicorn[standard]==0.22.0  # Serveur ASGI pour FastAPI
 
 # Middleware
