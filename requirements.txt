@@ -3,7 +3,7 @@ fastapi==0.95.2
 uvicorn[standard]==0.22.0  # Serveur ASGI pour FastAPI
 
 # Middleware
-fastapi-cors==0.0.6
+fastapi-cors
 
 # Machine Learning et Vision par Ordinateur
 torch==2.0.1
