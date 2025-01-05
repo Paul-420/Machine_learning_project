@@ -1,0 +1,24 @@
+# Backend Framework
+fastapi==0.95.2
+uvicorn[standard]==0.22.0  # Serveur ASGI pour FastAPI
+
+# Middleware
+fastapi-cors==0.3.0
+
+# Machine Learning et Vision par Ordinateur
+torch==2.0.1
+torchvision==0.15.2
+pillow==10.0.1  # Pour la gestion des images avec PIL
+
+# Base de données
+sqlalchemy==2.0.21
+
+# Transformations et Utilitaires
+numpy==1.24.3
+pandas==2.0.3
+
+# Tests
+pytest==7.4.0
+
+# Déploiement
+gunicorn==20.1.0
