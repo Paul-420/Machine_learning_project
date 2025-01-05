@@ -1,7 +1,0 @@
-A faire pour la CI/CD :
-- Créer un repo DockerHub
-- Rajouter credentials DockerHub sur GitHub (Settings -> Secrets And Variables -> Actions -> New Repository)
-    - Mettre Username DockerHub dans un repository secret appelé DOCKER_USERNAME
-    - Mettre Token ou Password DockerHub dans un repository secret appelé DOCKER_PASSWORD
-
-- build images docker 

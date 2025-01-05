@@ -1,17 +1,12 @@
 name: CI/CD Pipeline
 
 on:
-  pull_request:
-    branches:
-      - dev
-      - Stagging
-      - master
-      - "**"
   push:
     branches:
       - dev
       - staging
       - main
+      - "**"
 
 jobs:
   # Étape 1 : Tests sur la branche dev
