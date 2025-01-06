@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from torchvision import models, transforms
 from PIL import Image
 import torch
@@ -8,7 +9,7 @@ import io
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 from backend.db_setup import SessionLocal, BirdImage
-
+import base64
 # Dictionnaire des classes avec les noms des oiseaux
 class_names = [
     "Black_footed_Albatross", "Laysan_Albatross", "Groove_billed_Ani", "Red_winged_Blackbird", "ParrRusty_Blackbirdot",
@@ -18,7 +19,7 @@ class_names = [
 
 # Initialiser l'application FastAPI
 app = FastAPI()
-
+      
 # Ajouter la configuration CORS pour permettre les requêtes de React (localhost:3000)
 app.add_middleware(
     CORSMiddleware,
@@ -27,6 +28,8 @@ app.add_middleware(
     allow_methods=["*"],  # Autoriser toutes les méthodes HTTP (GET, POST, etc.)
     allow_headers=["*"],  # Autoriser tous les headers
 )
+from fastapi.responses import UJSONResponse
+app.default_response_class = UJSONResponse
 
 # Charger le modèle avec la même architecture
 num_classes = 10  # Remplacez par le nombre réel de classes
@@ -46,21 +49,35 @@ transform = transforms.Compose([
 ])
 
 @app.get("/images/")
-def get_images():
+def get_images(skip: int = 0, limit: int = 20):
     db: Session = SessionLocal()
     try:
-        images = db.query(BirdImage).all()
+        images = db.query(BirdImage).offset(skip).limit(limit).all()
         image_data = [
             {
                 "id": image.id,
                 "class_label": image.class_label,
-                "image": f"data:image/jpeg;base64,{image.image.decode('latin1')}"
+                "image": f"data:image/jpeg;base64,{base64.b64encode(image.image).decode('utf-8')}"
             }
             for image in images
         ]
-        return JSONResponse(content=image_data)
+        return image_data
     finally:
         db.close()
+
+
+
+@app.get("/images/{image_id}")
+def get_image(image_id: int):
+    db: Session = SessionLocal()
+    try:
+        image = db.query(BirdImage).filter(BirdImage.id == image_id).first()
+        if not image:
+            return JSONResponse(content={"error": "Image not found"}, status_code=404)
+        return JSONResponse(content={"image": f"data:image/jpeg;base64,{image.image.decode('latin1')}"})
+    finally:
+        db.close()
+
 
 # Route pour tester le service
 @app.get("/")
