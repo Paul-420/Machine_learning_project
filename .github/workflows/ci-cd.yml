@@ -101,25 +101,23 @@ jobs:
     needs: [test, build-and-test, deploy]
     runs-on: ubuntu-latest
     steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Merge dev into staging
         if: github.ref_name == 'dev'
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          curl -X POST \
-            -H "Authorization: token $GH_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/linkaon/machine_learning_project/pulls \
-            -d '{"title":"Merge dev into staging","head":"dev","base":"staging"}'
+          git checkout staging
+          git merge dev --no-ff -m "Auto-merge dev into staging"
+          git push origin staging
 
       - name: Merge staging into master
         if: github.ref_name == 'staging'
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          curl -X POST \
-            -H "Authorization: token $GH_TOKEN" \
-            -H "Accept: application/vnd.github.v3+json" \
-            https://api.github.com/repos/linkaon/machine_learning_project/pulls \
-            -d '{"title":"Merge staging into master","head":"staging","base":"master"}'
+          git checkout master
+          git merge dev --no-ff -m "Auto-merge staging into master"
+          git push origin master
+          
 
