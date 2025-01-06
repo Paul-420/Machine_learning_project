@@ -66,14 +66,13 @@ body {
     gap: 15px;
   }
   
-  .image-card {
-    border: 1px solid #ddd;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
+  .image-card img {
+    width: 100%; /* Utilise la largeur de l'élément parent */
+    height: auto; /* Ajuste la hauteur pour garder les proportions */
+    object-fit: cover; /* Assure que l'image couvre entièrement l'espace */
+    border-radius: 5px;
+}
+
   
   .image-card:hover {
     transform: scale(1.05);
