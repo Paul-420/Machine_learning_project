@@ -42,12 +42,31 @@ jobs:
         run: |
           docker build -f backend/Dockerfile -t linkaon/machine_learning_project-backend:staging .
           docker build -f frontend/Dockerfile -t linkaon/machine_learning_project-frontend:staging .
-
+      - name: Debug Docker login
+        run: |
+          echo "Logging in to Docker Hub..."
+          docker info
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Verify Docker images
+        run: |
+          # Liste les images Docker disponibles
+          docker images linkaon/machine_learning_project-backend:staging
+          docker images linkaon/machine_learning_project-frontend:staging
+          
+          docker run --rm -d --name test-backend linkaon/machine_learning_project-backend:staging
+          docker logs test-backend
+          docker stop test-backend
+
+          docker run --rm -d --name test-frontend linkaon/machine_learning_project-frontend:staging
+          docker logs test-frontend
+          docker stop test-frontend
 
       - name: Push Docker images
         run: |
@@ -78,15 +97,10 @@ jobs:
           docker tag linkaon/machine_learning_project-frontend:staging linkaon/machine_learning_project-frontend:latest
 
       - name: Push Docker images to main
-        run: |
+        run: |  
           docker push linkaon/machine_learning_project-backend:latest
           docker push linkaon/machine_learning_project-frontend:latest
   
-      - name: Debug Docker login
-        run: |
-          echo "Logging in to Docker Hub..."
-          docker info
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Deploy to Cloud
         run: |
