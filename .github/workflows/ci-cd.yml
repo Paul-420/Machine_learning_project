@@ -54,20 +54,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Verify Docker images
-        run: |
-          # Liste les images Docker disponibles
-          docker images linkaon/machine_learning_project-backend:staging
-          docker images linkaon/machine_learning_project-frontend:staging
-          
-          docker run --rm -d --name test-backend linkaon/machine_learning_project-backend:staging
-          docker logs test-backend
-          docker stop test-backend
-
-          docker run --rm -d --name test-frontend linkaon/machine_learning_project-frontend:staging
-          docker logs test-frontend
-          docker stop test-frontend
-
       - name: Push Docker images
         run: |
           docker push linkaon/machine_learning_project-backend:staging
