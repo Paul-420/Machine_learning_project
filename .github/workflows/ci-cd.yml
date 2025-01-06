@@ -97,3 +97,29 @@ jobs:
       - name: Deploy to Cloud
         run: |
           echo "Déploiement terminé avec succès. Ajouter ici votre commande ou API de déploiement cloud."
+  auto-merge:
+    needs: [test, build-and-test, deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Merge dev into staging
+        if: github.ref_name == 'dev'
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          curl -X POST \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/linkaon/machine_learning_project/pulls \
+            -d '{"title":"Merge dev into staging","head":"dev","base":"staging"}'
+
+      - name: Merge staging into master
+        if: github.ref_name == 'staging'
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          curl -X POST \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/linkaon/machine_learning_project/pulls \
+            -d '{"title":"Merge staging into master","head":"staging","base":"master"}'
+
