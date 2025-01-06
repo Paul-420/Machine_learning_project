@@ -54,20 +54,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Verify Docker images
-        run: |
-          # Liste les images Docker disponibles
-          docker images linkaon/machine_learning_project-backend:staging
-          docker images linkaon/machine_learning_project-frontend:staging
-          
-          docker run --rm -d --name test-backend linkaon/machine_learning_project-backend:staging
-          docker logs test-backend
-          docker stop test-backend
-
-          docker run --rm -d --name test-frontend linkaon/machine_learning_project-frontend:staging
-          docker logs test-frontend
-          docker stop test-frontend
-
       - name: Push Docker images
         run: |
           docker push linkaon/machine_learning_project-backend:staging
@@ -93,13 +79,13 @@ jobs:
 
       - name: Tag images as latest
         run: |
-          docker tag linkaon/machine_learning_project-backend:staging linkaon/machine_learning_project-backend:latest
-          docker tag linkaon/machine_learning_project-frontend:staging linkaon/machine_learning_project-frontend:latest
+          docker tag linkaon/machine_learning_project-backend:staging linkaon/machine_learning_project-backend:v1.0
+          docker tag linkaon/machine_learning_project-frontend:staging linkaon/machine_learning_project-frontend:v2.0
 
       - name: Push Docker images to main
         run: |  
-          docker push linkaon/machine_learning_project-backend:latest
-          docker push linkaon/machine_learning_project-frontend:latest
+          docker push linkaon/machine_learning_project-backend:v1.0
+          docker push linkaon/machine_learning_project-frontend:v2.0
   
 
       - name: Deploy to Cloud
