@@ -81,6 +81,12 @@ jobs:
         run: |
           docker push linkaon/machine_learning_project-backend:latest
           docker push linkaon/machine_learning_project-frontend:latest
+  
+      - name: Debug Docker login
+        run: |
+          echo "Logging in to Docker Hub..."
+          docker info
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Deploy to Cloud
         run: |
