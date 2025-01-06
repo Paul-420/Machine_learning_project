@@ -5,7 +5,7 @@ on:
     branches:
       - dev
       - staging
-      - main
+      - master
       - "**"
 
 jobs:
@@ -61,7 +61,7 @@ jobs:
 
   # Étape 3 : Déploiement sur la branche main
   deploy:
-    if: github.ref_name == 'main'
+    if: github.ref_name == 'master'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
