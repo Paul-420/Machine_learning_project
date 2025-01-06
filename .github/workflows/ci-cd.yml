@@ -40,7 +40,7 @@ jobs:
 
       - name: Build Docker images
         run: |
-          docker build -t linkaon/machine_learning_project-backend:staging .
+          docker build -t backend/Dockerfile -t linkaon/machine_learning_project-backend:staging .
           docker build -f frontend/Dockerfile -t linkaon/machine_learning_project-frontend:staging .
 
       - name: Log in to DockerHub
