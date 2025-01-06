@@ -42,7 +42,12 @@ jobs:
         run: |
           docker build -f backend/Dockerfile -t linkaon/machine_learning_project-backend:staging .
           docker build -f frontend/Dockerfile -t linkaon/machine_learning_project-frontend:staging .
-
+      - name: Debug Docker login
+        run: |
+          echo "Logging in to Docker Hub..."
+          docker info
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    
       - name: Log in to DockerHub
         uses: docker/login-action@v2
         with:
@@ -72,15 +77,22 @@ jobs:
           docker pull linkaon/machine_learning_project-backend:staging
           docker pull linkaon/machine_learning_project-frontend:staging
 
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Tag images as latest
         run: |
-          docker tag linkaon/machine_learning_project-backend:staging linkaon/machine_learning_project-backend:latest
-          docker tag linkaon/machine_learning_project-frontend:staging linkaon/machine_learning_project-frontend:latest
+          docker tag linkaon/machine_learning_project-backend:staging linkaon/machine_learning_project-backend:v1.0
+          docker tag linkaon/machine_learning_project-frontend:staging linkaon/machine_learning_project-frontend:v2.0
 
       - name: Push Docker images to main
-        run: |
-          docker push linkaon/machine_learning_project-backend:latest
-          docker push linkaon/machine_learning_project-frontend:latest
+        run: |  
+          docker push linkaon/machine_learning_project-backend:v1.0
+          docker push linkaon/machine_learning_project-frontend:v2.0
+  
 
       - name: Deploy to Cloud
         run: |
