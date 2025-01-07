@@ -1,0 +1,18 @@
+name: my-app # Name of your app
+runtime: docker # Use 'docker' if you have a Dockerfile, or specify another runtime (e.g., 'node', 'python', etc.)
+git:
+  branch: master # Branch to deploy
+  repository: https://github.com/Paul-420/Machine_learning_project.git # Your repository URL
+build:
+  type: docker # If you use Docker, set this; for auto-detection, omit this field
+  dockerfile: ./Dockerfile # Optional, defaults to `Dockerfile`
+routes:
+  - name: main-route
+    port: 8080 # The port your app listens on
+    protocol: https
+    path: /
+env:
+  - name: NODE_ENV
+    value: production # Example environment variable
+  - name: MY_API_KEY
+    value: abc123
