@@ -12,7 +12,7 @@ from backend.db_setup import SessionLocal, BirdImage
 import base64
 # Dictionnaire des classes avec les noms des oiseaux
 class_names = [
-    "Black_footed_Albatross", "Laysan_Albatross", "Groove_billed_Ani", "Red_winged_Blackbird", "ParrRusty_Blackbirdot",
+    "Black_footed_Albatross", "Laysan_Albatross", "Groove_billed_Ani", "Red_winged_Blackbird", "Rusty_Blackbird",
     "Bobolink", "Indigo_Bunting", "Eastern_Towhee", "Pelagic_Cormorant", "Bronzed_Cowbird"
 ]
 
