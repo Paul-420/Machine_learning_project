@@ -1,0 +1,5 @@
+outs:
+- md5: a0b1f0c4cb744cdb4980c153900147ef
+  size: 1160998912
+  hash: md5
+  path: bird_data.db

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "express": "^4.21.2",
+    "ml_birds": "file:",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "sqlite3": "^5.1.7"
