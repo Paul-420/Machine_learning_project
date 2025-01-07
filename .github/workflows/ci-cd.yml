@@ -97,6 +97,7 @@ jobs:
       - name: Deploy to Cloud
         run: |
           echo "Déploiement terminé avec succès. Ajouter ici votre commande ou API de déploiement cloud."
+          
   auto-merge:
     needs: [test, build-and-test, deploy]
     runs-on: ubuntu-latest
