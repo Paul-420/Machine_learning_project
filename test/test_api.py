@@ -14,7 +14,7 @@ def test_read_root():
     assert response.json() == {"message": "Bienvenue dans l'API de classification des oiseaux"}
 
 def test_predict():
-    with open("test_image.jpg", "rb") as f:
-        response = client.post("/predict/", files={"file": ("test_image.jpg", f, "image/jpeg")})
+    with open("test/test_image.png", "rb") as f:
+        response = client.post("/predict/", files={"file": ("test/test_image.png", f, "image/png")})
     assert response.status_code == 200
     assert "prediction" in response.json()
