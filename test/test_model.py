@@ -4,7 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 import pytest
 import torch
-from app import model, class_names
+from backend.app import model, class_names
 
 def test_model_prediction():
     dummy_input = torch.randn(1, 3, 224, 224)
