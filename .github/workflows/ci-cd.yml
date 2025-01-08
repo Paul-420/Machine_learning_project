@@ -29,6 +29,12 @@ jobs:
       - name: Run FastAPI tests
         run: |
           pytest --maxfail=5 --disable-warnings
+       
+      - name: Merge dev into staging
+        run: |
+            git checkout staging
+            git merge dev --no-ff -m "Auto-merge dev into staging"
+            git push origin staging
 
   # Étape 2 : Build Docker et tests sur la branche staging
   build-and-test:
@@ -63,6 +69,12 @@ jobs:
         run: |
           # Ajouter vos tests d'intégration ici
           echo "Tests d'intégration exécutés."
+      
+      - name: Merge staging into master
+        run: |
+          git checkout master
+          git merge dev --no-ff -m "Auto-merge staging into master"
+          git push origin master
 
   # Étape 3 : Déploiement sur la branche main
   deploy:
@@ -97,28 +109,6 @@ jobs:
       - name: Deploy to Cloud
         run: |
           echo "Déploiement terminé avec succès. Ajouter ici votre commande ou API de déploiement cloud."
-          
-  auto-merge:
-    needs: [test, build-and-test, deploy]
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Merge dev into staging
-        if: github.ref_name == 'dev'
-        run: |
-          git checkout staging
-          git merge dev --no-ff -m "Auto-merge dev into staging"
-          git push origin staging
-
-      - name: Merge staging into master
-        if: github.ref_name == 'staging'
-        run: |
-          git checkout master
-          git merge dev --no-ff -m "Auto-merge staging into master"
-          git push origin master
+        
           
 
