@@ -12,8 +12,8 @@ from backend.db_setup import SessionLocal, BirdImage
 import base64
 # Dictionnaire des classes avec les noms des oiseaux
 class_names = [
-    "Black_footed_Albatross", "Laysan_Albatross", "Groove_billed_Ani", "Red_winged_Blackbird", "Rusty_Blackbird",
-    "Bobolink", "Indigo_Bunting", "Eastern_Towhee", "Pelagic_Cormorant", "Bronzed_Cowbird"
+    "001.Black_footed_Albatross","002.Laysan_Albatross","004.Groove_billed_Ani","010.Red_winged_Blackbird","011.Rusty_Blackbird",
+    "013.Bobolink","014.Indigo_Bunting","021.Eastern_Towhee","025.Pelagic_Cormorant","026.Bronzed_Cowbird"
 ]
 
 
@@ -33,20 +33,36 @@ app.default_response_class = UJSONResponse
 
 # Charger le modèle avec la même architecture
 num_classes = 10  # Remplacez par le nombre réel de classes
-model = models.resnet18(pretrained=False)
-model.fc = nn.Linear(model.fc.in_features, num_classes)
+model = models.mobilenet_v2(pretrained=False)
+model.classifier[1] = nn.Linear(in_features=model.classifier[1].in_features, out_features=num_classes)
+#model.fc = nn.Linear(model.fc.in_features, num_classes)
+model.load_state_dict(torch.load("backend/bird_classifier.pth"))
+
+#state_dict = torch.load("backend/bird_classifier.pth", map_location=torch.device('cpu'))
+#missing_keys, unexpected_keys = model.load_state_dict(state_dict, strict=False)
+#
+## Initialiser les poids manquants (si nécessaire)
+## Initialiser les poids manquants (si nécessaire)
+#for name, param in model.named_parameters():
+#    if name in missing_keys:
+#        print(f"Initialisation de {name} manuellement.")
+#        if param.dim() > 1:  # Si c'est un tenseur avec plus d'une dimension
+#            nn.init.xavier_uniform_(param)  # Initialisation Xavier pour les poids
+#        else:  # Si c'est un vecteur ou un scalaire
+#            nn.init.zeros_(param)  # Initialise à zéro
 
 # Charger les poids sauvegardés
-model.load_state_dict(torch.load("backend/bird_classifier.pth", map_location=torch.device('cpu')), strict=False)
+#model.load_state_dict(torch.load("backend/bird_classifier.pth"))
 
 model.eval()  # Mode évaluation
 
-# Transformations pour l'image
 transform = transforms.Compose([
     transforms.Resize((224, 224)),
     transforms.ToTensor(),
     transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
+
+
 
 @app.get("/images/")
 def get_images(skip: int = 0, limit: int = 20):
@@ -84,28 +100,43 @@ def get_image(image_id: int):
 def read_root():
     return {"message": "Bienvenue dans l'API de classification des oiseaux"}
 
+import threading
+
+# Verrou pour synchroniser l'accès au modèle
+model_lock = threading.Lock()
+
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
 # Route pour prédire une image
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
     try:
-        # Charger l'image depuis le fichier uploadé
+        # Charger l'image
+        logging.info("Image uploaded successfully.")
         image = Image.open(io.BytesIO(await file.read()))
-        image = image.convert("RGB")  # S'assurer que l'image est au format RGB
+        image = image.convert("RGB")
         
         # Prétraiter l'image
-        input_tensor = transform(image).unsqueeze(0)  # Ajouter une dimension batch
+        input_tensor = transform(image).unsqueeze(0)
+        logging.info(f"Input tensor shape: {input_tensor.shape}")
         
-        # Faire la prédiction
+        # Prédiction
+        #with model_lock:
+        #    with torch.no_grad():
+        #        outputs = model(input_tensor)
+        #        logging.info(f"Model outputs: {outputs}")
+        #        _, predicted_class = torch.max(outputs, 1)
         with torch.no_grad():
             outputs = model(input_tensor)
             _, predicted_class = torch.max(outputs, 1)
         
-        # Obtenir le nom de l'oiseau à partir de la prédiction
         bird_name = class_names[predicted_class.item()]
+        logging.info(f"Predicted bird: {bird_name}")
         
-        # Renvoyer le résultat
         return {"prediction": bird_name}
     
     except Exception as e:
+        logging.error(f"Error during prediction: {str(e)}")
         return {"error": str(e)}
-
